@@ -1,53 +1,269 @@
-# Getting Started with Create React App
+# 🏛️ CIVIC TRACK
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Your Voice for a Better City** - A comprehensive digital platform for civic engagement and municipal services.
 
-## Available Scripts
+[![React](https://img.shields.io/badge/React-18.0+-blue.svg)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-06B6D4.svg)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-In the project directory, you can run:
+## 📋 Table of Contents
 
-### `npm start`
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
+- [Pages & Navigation](#pages--navigation)
+- [API Integration](#api-integration)
+- [Contributing](#contributing)
+- [License](#license)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🎯 Overview
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+CIVIC TRACK is a modern web application designed to bridge the gap between citizens and municipal services. It provides a transparent, efficient, and user-friendly platform for filing complaints, tracking their progress, paying taxes, and accessing public information.
 
-### `npm test`
+### 🎭 Live Demo
+*Coming Soon - Deployment in progress*
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🖼️ Screenshots
+*Screenshots will be added here*
 
-### `npm run build`
+## ✨ Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🏠 **Homepage**
+- Modern hero section with call-to-action buttons
+- Step-by-step process explanation
+- Live statistics with animated counters
+- Interactive complaint tracking
+- Ward information lookup
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 📝 **Complaint Management**
+- **File Complaints**: Comprehensive form with photo upload and location detection
+- **Track Status**: Real-time tracking with unique complaint IDs
+- **Status History**: Complete timeline of complaint resolution
+- **Category-based Filing**: Organized complaint categories
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 💰 **Tax Payment Portal**
+- **Multiple Tax Types**: Property, Water, Trade License, Building Permit, Garbage Collection, Parking
+- **Secure Payment**: Multiple payment methods (UPI, Cards, Net Banking, Wallets)
+- **Instant Receipts**: Download payment confirmations
+- **Payment History**: Track all transactions
 
-### `npm run eject`
+### 📢 **Public Information**
+- **Public Notices**: View and download official notices and tenders
+- **Department Directory**: Contact information for all municipal departments
+- **FAQ Section**: Comprehensive help and support documentation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 🎨 **User Experience**
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- **Dark/Light Mode**: Toggle between themes
+- **Multi-language Support**: Google Translate integration
+- **Accessibility**: WCAG compliant design
+- **Progressive Web App**: Offline capabilities
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🛠️ Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Frontend
+- **React 19.1.0** - Modern UI library
+- **Tailwind CSS 3.4.17** - Utility-first CSS framework
+- **Chart.js 4.5.0** - Data visualization
+- **React CountUp 6.5.3** - Animated counters
+- **React Intersection Observer 9.16.0** - Scroll animations
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Maps & Location
+- **Leaflet 1.9.4** - Interactive maps
+- **React Leaflet 5.0.0** - React components for Leaflet
 
-## Learn More
+### Development Tools
+- **Create React App 5.0.1** - Build tooling
+- **PostCSS 8.5.6** - CSS processing
+- **Autoprefixer 10.4.21** - CSS vendor prefixing
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Testing
+- **Jest & React Testing Library** - Unit and integration testing
+- **Web Vitals 2.1.4** - Performance monitoring
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🚀 Getting Started
 
-### Code Splitting
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Git
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Akshat1124/civic_track.git
+   cd civic_track
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm start
+   ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Environment Setup
+
+Create a `.env` file in the root directory (optional):
+```env
+REACT_APP_API_URL=your_api_endpoint
+REACT_APP_GOOGLE_TRANSLATE_KEY=your_google_translate_key
+```
+
+## 📁 Project Structure
+
+```
+civic_app/
+├── public/
+│   ├── index.html
+│   ├── favicon.ico
+│   └── manifest.json
+├── src/
+│   ├── App.js                 # Main application component
+│   ├── App.css               # Application styles
+│   ├── index.js              # Entry point
+│   ├── index.css             # Global styles with Tailwind imports
+│   └── components/           # Reusable components
+├── tailwind.config.js        # Tailwind CSS configuration
+├── postcss.config.js         # PostCSS configuration
+├── package.json              # Dependencies and scripts
+└── README.md                 # Project documentation
+```
+
+## 📜 Available Scripts
+
+### Development
+```bash
+npm start          # Start development server
+npm test           # Run test suite
+npm run build      # Build for production
+npm run eject      # Eject from Create React App (irreversible)
+```
+
+### Linting & Formatting
+```bash
+npm run lint       # Run ESLint
+npm run format     # Format code with Prettier
+```
+
+## 🗺️ Pages & Navigation
+
+### Hash-based Routing
+The application uses hash-based routing for navigation:
+
+- `#/` - Homepage
+- `#/pay-tax` - Tax Payment Portal
+- `#/notices` - Public Notices
+- `#/departments` - Department Directory
+- `#/faq` - Frequently Asked Questions
+
+### Navigation Components
+- **Header**: Top navigation with theme toggle and user account
+- **Sidebar**: Mobile-friendly slide-out menu
+- **Footer**: Links and contact information
+
+## 🔌 API Integration
+
+### Mock Data Structure
+Currently using mock data for development:
+
+```javascript
+// Complaint Data
+mockComplaintData = {
+  'C-12345': {
+    id: 'C-12345',
+    submittedBy: 'User Name',
+    category: 'Category',
+    status: 'Status',
+    history: [...]
+  }
+}
+
+// Tax Data
+mockTaxData = [
+  {
+    id: 'tax-id',
+    title: 'Tax Name',
+    description: 'Description',
+    baseRate: 'Rate',
+    features: [...]
+  }
+]
+```
+
+### Future API Integration
+Ready for backend integration with RESTful APIs:
+- Complaint CRUD operations
+- Payment processing
+- User authentication
+- Document management
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m "Add your feature description"
+   ```
+4. **Push to the branch**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+5. **Open a Pull Request**
+
+### Code Style
+- Use Prettier for code formatting
+- Follow React best practices
+- Write meaningful commit messages
+- Add comments for complex logic
+
+### Testing
+- Write tests for new features
+- Ensure all tests pass before submitting PR
+- Maintain code coverage above 80%
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Team
+
+- **Akshat Srivastava** - Lead Developer
+- *Add team members here*
+
+## 📞 Support
+
+For support and questions:
+- 📧 Email: contact@civictrack.gov.in
+- 📱 Phone: 0542-2501100
+- 🏢 Address: Nagar Nigam Varanasi Head Office, Sigra, Varanasi, UP 221010
+
+## 🙏 Acknowledgments
+
+- Create React App team for the excellent boilerplate
+- Tailwind CSS for the utility-first CSS framework
+- React community for amazing libraries and tools
+- Municipal Corporation of Varanasi for requirements and feedback
+
+---
+
+**Made with ❤️ for better civic engagement**
 
 ### Analyzing the Bundle Size
 
