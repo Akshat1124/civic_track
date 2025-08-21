@@ -126,7 +126,7 @@ const AccountDropdown = ({ isLoggedIn, user, onLoginClick, onLogout }) => {
 // --- NAVIGATION COMPONENTS ---
 
 const Sidebar = ({ isOpen, onClose, theme, setTheme, onLoginClick }) => {
-    const sidebarNavSections = [ { title: 'Public Services', links: [ { href: '#file-complaint', label: 'File a Complaint', icon: '📝' }, { href: '#track-complaint', label: 'Track a Complaint', icon: '🔍' }, { href: '#/pay-tax', label: 'Pay Property Tax', icon: '🏠' } ] }, { title: 'Information', links: [ { href: '#/notices', label: 'Public Notices', icon: '📢' }, { href: '#/departments', label: 'Departments', icon: '🏢' } ] }, { title: 'Help & Support', links: [ { href: '#/faq', label: 'FAQ', icon: '❓' }, { href: '#footer', label: 'Contact Us', icon: '📞' } ] } ];
+    const sidebarNavSections = [ { title: 'Public Services', links: [ { href: '#file-complaint', label: 'File a Complaint', icon: '📝' }, { href: '#track-complaint', label: 'Track a Complaint', icon: '🔍' }, { href: '#/pay-tax', label: 'Pay Tax', icon: '💰' } ] }, { title: 'Information', links: [ { href: '#/notices', label: 'Public Notices', icon: '📢' }, { href: '#/departments', label: 'Departments', icon: '🏢' } ] }, { title: 'Help & Support', links: [ { href: '#/faq', label: 'FAQ', icon: '❓' }, { href: '#footer', label: 'Contact Us', icon: '📞' } ] } ];
     useEffect(() => { const handleEsc = (event) => { if (event.key === 'Escape') onClose(); }; window.addEventListener('keydown', handleEsc); return () => window.removeEventListener('keydown', handleEsc); }, [onClose]);
     return (
         <>
