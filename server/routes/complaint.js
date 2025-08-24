@@ -1,49 +1,44 @@
-// Get all complaints (for admin/testing)
-router.get('/all', async (req, res) => {
+const express = require('express');
+const router = express.Router();
+const Complaint = require('../models/Complaint');
+
+// --- API Endpoint to Create a Complaint ---
+router.post('/file', async (req, res) => {
   try {
-    const complaints = await Complaint.find().populate('user', 'username email');
-    res.json(complaints);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error.' });
+    const { fullName, mobile, address, category, description } = req.body;
+    const randomTicketId = `C-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    const newComplaint = new Complaint({
+      complaintId: randomTicketId,
+      fullName,
+      mobile,
+      address,
+      category,
+      description,
+      history: [{ status: 'Complaint Submitted', details: 'Initial complaint filed by the citizen.' }]
+    });
+
+    await newComplaint.save();
+
+    res.status(201).json({
+      message: `Success! Your complaint has been filed. Your tracking ID is ${randomTicketId}`,
+      complaintId: randomTicketId
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error submitting complaint.' });
   }
 });
-const express = require('express');
-const Complaint = require('../models/Complaint');
-const User = require('../models/User');
 
-const router = express.Router();
-
-// Middleware to check if user is logged in (expects userId in req.body or req.headers)
-function requireLogin(req, res, next) {
-  const userId = req.body.userId || req.headers['x-user-id'];
-  if (!userId) return res.status(401).json({ message: 'Login required.' });
-  req.userId = userId;
-  next();
-}
-
-// File a new complaint
-router.post('/file', requireLogin, async (req, res) => {
+// --- API Endpoint to Track a Complaint ---
+router.get('/track/:id', async (req, res) => {
   try {
-    const { category, address, description } = req.body;
-    if (!category || !address || !description) {
-      return res.status(400).json({ message: 'All fields are required.' });
+    const complaint = await Complaint.findOne({ complaintId: req.params.id });
+    if (complaint) {
+      res.status(200).json(complaint);
+    } else {
+      res.status(404).json({ message: 'Complaint not found.' });
     }
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found.' });
-    const complaint = new Complaint({
-      user: user._id,
-      category,
-      address,
-      description,
-      history: [{ status: 'Submitted', details: 'Complaint submitted by user.' }]
-    });
-    await complaint.save();
-    res.status(201).json({
-      message: 'Complaint filed successfully.',
-      complaintId: complaint._id,
-      complaint
-    });
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ message: 'Server error.' });
   }
 });
