@@ -2,12 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
-// Remove submitComplaint import
+import { fileComplaint, trackComplaint } from './api';
 Chart.register(...registerables);
 
 // --- MOCK DATA ---
-
-const mockComplaintData = { 'C-12345': { id: 'C-12345', submittedBy: 'Akshat Srivastava', category: 'Garbage & Sanitation', address: 'Near Sigra Police Station, Varanasi, Uttar Pradesh', description: 'Large pile of garbage has not been collected for over a week...', status: 'Resolved', history: [ { date: '2025-07-28', status: 'Complaint Submitted', details: 'Initial complaint filed by the citizen.' }, { date: '2025-07-29', status: 'Assigned to Department', details: 'Complaint assigned to the Sanitation Department.' }, { date: '2025-07-30', status: 'Work in Progress', details: 'Sanitation crew dispatched.' }, { date: '2025-07-30', status: 'Resolved', details: 'The garbage has been cleared.' }, ] } };
 const mockWardData = { '10': { corporator: 'Smt. Anita Singh', mobile: '9876543210', recentWork: ['New streetlights installed on main road.', 'Repaired major water pipeline leakage.'] }, '22': { corporator: 'Shri. Ramesh Gupta', mobile: '9871234567', recentWork: ['Road resurfacing project completed.', 'Conducted sanitation drive.'] } };
 const mockFaqData = [ { q: 'How do I file a complaint?', a: 'You can file a complaint by filling out the form on our homepage. Please provide as much detail as possible, including the exact location and a photo if possible.' }, { q: 'How long does it take to resolve a complaint?', a: 'The resolution time varies depending on the complexity of the issue and the department involved. The average time is 5-7 working days. You will receive notifications on status changes.' }, { q: 'Can I track my complaint?', a: 'Yes, after submitting a complaint, you will receive a unique Tracking ID. You can use this ID in the "Track Your Complaint" section to see the latest updates and the complete history of actions taken.' }, { q: 'Is my personal information safe?', a: 'Absolutely. We adhere to strict data privacy policies. Your personal information is only used for communication regarding your complaint and is not shared with third parties.' } ];
 const mockUserComplaints = [ { id: 'C-54321', category: 'Streetlight Not Working', date: '2025-07-25', status: 'In Progress' }, { id: 'C-48129', category: 'Road Potholes', date: '2025-06-12', status: 'Resolved' } ];
@@ -197,16 +195,11 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                             <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Register</button>
                         </form>
                     )}
-                    {message && (
-                        <div className={`text-center p-3 rounded-md text-sm ${isSuccess ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'}`}>
-                          {message}
-                          {trackingId && isSuccess && (
-                            <div className="mt-2 text-blue-700 dark:text-blue-300 font-bold">
-                              Your Tracking ID: {trackingId}
-                            </div>
-                          )}
-                        </div>
-                    )}
+                                        {message && (
+                                                <div className={`text-center p-3 rounded-md text-sm ${isSuccess ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'}`}>
+                                                    {message}
+                                                </div>
+                                        )}
                     <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">{isLoginView ? "Don't have an account? " : "Already have an account? "}<button onClick={() => { setIsLoginView(!isLoginView); setMessage(""); }} className="font-medium text-orange-600 hover:text-orange-500">{isLoginView ? 'Register' : 'Login'}</button></p>
                 </div>
             </div>
@@ -300,9 +293,80 @@ const Footer = () => ( <footer id="footer" className="bg-gray-800 dark:bg-black/
 // --- DYNAMIC SECTION COMPONENTS ---
 
 const ComplaintStatusPage = ({ complaint, onBack }) => { const getStatusColor = (status) => { switch (status) { case 'Resolved': return 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300'; case 'Work in Progress': return 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300'; default: return 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300'; } }; return ( <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 w-full"><div className="flex justify-between items-start mb-6"><h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Complaint Status</h3><button onClick={onBack} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">← Search Again</button></div><div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-4 border rounded-lg dark:border-gray-700"><div><p className="text-sm text-gray-500 dark:text-gray-400">Category</p><p className="font-semibold">{complaint.category}</p></div><div><p className="text-sm text-gray-500 dark:text-gray-400">Status</p><p className={`font-semibold px-2 py-1 text-xs inline-block rounded-full ${getStatusColor(complaint.status)}`}>{complaint.status}</p></div><div className="md:col-span-2"><p className="text-sm text-gray-500 dark:text-gray-400">Location</p><p className="font-semibold">{complaint.address}</p></div><div className="md:col-span-2"><p className="text-sm text-gray-500 dark:text-gray-400">Description</p><p>{complaint.description}</p></div></div><div><h4 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Complaint History</h4><ol className="relative border-l border-gray-200 dark:border-gray-700">{complaint.history.map((item, index) => ( <li key={index} className="mb-10 ml-6"><span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900"><svg className="w-3 h-3 text-blue-800 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" /></svg></span><h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{item.status}</h3><time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">{item.date}</time><p className="text-base font-normal text-gray-500 dark:text-gray-400">{item.details}</p></li> ))}</ol></div></div> ); };
-const ComplaintTracker = () => { const [trackingId, setTrackingId] = useState(''); const [foundComplaint, setFoundComplaint] = useState(null); const [searchStatus, setSearchStatus] = useState(''); const [isLoading, setIsLoading] = useState(false); const handleSubmit = (e) => { e.preventDefault(); setIsLoading(true); setSearchStatus(''); setTimeout(() => { const complaint = mockComplaintData[trackingId.trim().toUpperCase()]; if (complaint) { setFoundComplaint(complaint); } else { setFoundComplaint(null); setSearchStatus('not_found'); } setIsLoading(false); }, 1500); }; const handleSearchAgain = () => { setFoundComplaint(null); setTrackingId(''); setSearchStatus(''); }; return ( <section id="track-complaint" className="py-16 bg-gray-50 dark:bg-gray-800/50"><div className="container mx-auto px-6"><div className="max-w-3xl mx-auto">{foundComplaint ? <ComplaintStatusPage complaint={foundComplaint} onBack={handleSearchAgain} /> : ( <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8"><h3 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-2">Check Your Complaint Status</h3><p className="text-center text-gray-500 dark:text-gray-400 mb-6">Have a tracking ID? Enter it below to see the latest updates.</p><form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3"><input type="text" value={trackingId} onChange={(e) => setTrackingId(e.target.value)} placeholder="Enter tracking ID (e.g., C-12345)" className="w-full text-lg px-5 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" /><button type="submit" disabled={isLoading} className="w-full sm:w-auto bg-gray-800 dark:bg-orange-600 text-white font-bold text-lg py-3 px-8 rounded-lg hover:bg-gray-900 dark:hover:bg-orange-700 transition flex items-center justify-center disabled:opacity-50">{isLoading ? <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> : 'Track'}</button></form>{searchStatus === 'not_found' && !isLoading && <div className="mt-4 text-center text-red-500">Complaint ID not found. Please check the ID and try again.</div>}</div> )}</div></div></section> ); };
+const ComplaintTracker = () => {
+    const [trackingId, setTrackingId] = useState('');
+    const [foundComplaint, setFoundComplaint] = useState(null);
+    const [searchStatus, setSearchStatus] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setSearchStatus('');
+        setFoundComplaint(null);
+        try {
+            const response = await trackComplaint(trackingId.trim().toUpperCase());
+            if (response.data && response.data.complaintId) {
+                setFoundComplaint(response.data);
+            } else {
+                setSearchStatus('not_found');
+            }
+        } catch (error) {
+            setSearchStatus('not_found');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSearchAgain = () => {
+        setFoundComplaint(null);
+        setTrackingId('');
+        setSearchStatus('');
+    };
+
+    return (
+        <section id="track-complaint" className="py-16 bg-gray-50 dark:bg-gray-800/50">
+            <div className="container mx-auto px-6">
+                <div className="max-w-3xl mx-auto">
+                    {foundComplaint ? (
+                        <ComplaintStatusPage complaint={foundComplaint} onBack={handleSearchAgain} />
+                    ) : (
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
+                            <h3 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-2">Check Your Complaint Status</h3>
+                            <p className="text-center text-gray-500 dark:text-gray-400 mb-6">Have a tracking ID? Enter it below to see the latest updates.</p>
+                            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                                <input
+                                    type="text"
+                                    value={trackingId}
+                                    onChange={(e) => setTrackingId(e.target.value)}
+                                    placeholder="Enter tracking ID (e.g., C-12345)"
+                                    className="w-full text-lg px-5 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition"
+                                />
+                                <button type="submit" disabled={isLoading} className="w-full sm:w-auto bg-gray-800 dark:bg-orange-600 text-white font-bold text-lg py-3 px-8 rounded-lg hover:bg-gray-900 dark:hover:bg-orange-700 transition flex items-center justify-center disabled:opacity-50">
+                                    {isLoading ? (
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    ) : (
+                                        'Track'
+                                    )}
+                                </button>
+                            </form>
+                            {searchStatus === 'not_found' && !isLoading && (
+                                <div className="mt-4 text-center text-red-500">
+                                    Complaint ID not found. Please check the ID and try again.
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </section>
+    );
+};
 const Statistics = ({ theme }) => { const chartRef = useRef(null); const chartInstance = useRef(null); const stats = [ { title: 'Total Complaints Resolved', value: 14289, color: 'text-green-600' }, { title: 'Average Resolution Time', value: 5.2, subtext: 'Days', color: 'text-orange-500', duration: 3, decimals: 1 }, { title: 'Citizen Satisfaction', value: 92, suffix: '%', color: 'text-yellow-500' } ]; useEffect(() => { if (chartRef.current) { if (chartInstance.current) { chartInstance.current.destroy(); } const ctx = chartRef.current.getContext('2d'); const legendColor = theme === 'dark' ? '#D1D5DB' : '#4B5563'; chartInstance.current = new Chart(ctx, { type: 'doughnut', data: { labels: ['Resolved', 'In Progress', 'New'], datasets: [{ data: [70, 20, 10], backgroundColor: ['rgba(34, 197, 94, 0.8)', 'rgba(249, 115, 22, 0.8)', 'rgba(234, 179, 8, 0.8)'], borderColor: theme === 'dark' ? '#111827' : '#FFFFFF', borderWidth: 4, }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { padding: 20, color: legendColor, font: { size: 14, family: 'Inter' } } }, tooltip: { enabled: true, backgroundColor: '#1F2937', titleFont: { size: 16, weight: 'bold', family: 'Inter' }, bodyFont: { size: 14, family: 'Inter' }, padding: 12, cornerRadius: 8, callbacks: { label: (context) => `${context.label || ''}: ${context.parsed || 0}%` } } } } }); } return () => { if (chartInstance.current) { chartInstance.current.destroy(); } }; }, [theme]); return ( <section id="stats" className="py-20 bg-gray-50 dark:bg-gray-800/50"><div className="container mx-auto px-6"><div className="text-center mb-12"><h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">Live Statistics</h2><p className="text-lg text-gray-600 dark:text-gray-300 mt-2">Transparency in action. See our performance in real-time.</p></div><div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"><div className="space-y-8">{stats.map((stat, index) => ( <StatCard key={index} {...stat} /> ))}</div><div className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg"><h3 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Complaint Status Overview</h3><div className="relative w-full max-w-xs mx-auto h-72"><canvas ref={chartRef}></canvas></div></div></div></div></section> ); };
-const FileComplaintSection = ({ isLoggedIn, currentUser, onRequireLogin }) => {
+const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
     const [formData, setFormData] = useState({ fullName: '', mobile: '', address: '', category: '', description: '' });
     const [formStatus, setFormStatus] = useState({ message: '', type: '' });
     const [selectedFile, setSelectedFile] = useState(null);
@@ -371,19 +435,39 @@ const FileComplaintSection = ({ isLoggedIn, currentUser, onRequireLogin }) => {
         return `C-${y}${m}${d}${h}${min}${s}${rand}`;
     };
 
-    const handleSubmit = (e) => {
+    // frontend/src/App.js ke andar FileComplaintSection component
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.fullName || !formData.mobile || !formData.category || !formData.description) {
-            setFormStatus({ message: 'Please fill out all required fields.', type: 'error' });
-            setTrackingId('');
+
+        // Pehle check karein ki user logged in hai ya nahi
+        if (!isLoggedIn) {
+            setFormStatus({ message: 'You must be logged in to submit a complaint.', type: 'error' });
+            onRequireLogin(); // Login modal open karega
             return;
         }
-        const randomTicketId = Math.floor(10000 + Math.random() * 90000);
-        setTrackingId(`C-${randomTicketId}`);
-        setFormStatus({ message: `Success! Your complaint has been filed.`, type: 'success' });
-        setFormData({ fullName: '', mobile: '', address: '', category: '', description: '' });
-        setSelectedFile(null);
-        e.target.reset();
+
+        // Form ke zaroori fields check karein
+        if (!formData.fullName || !formData.mobile || !formData.category || !formData.description) {
+            setFormStatus({ message: 'Please fill out all required fields.', type: 'error' });
+            return;
+        }
+
+        try {
+            // Sirf backend ko data bhejein. Frontend mein koi ID na banayein.
+            const response = await fileComplaint(formData);
+
+            // Backend se mila hua success message (jisme sahi ID hai) display karein
+            setFormStatus({ message: response.data.message, type: 'success' });
+
+            // Form ko reset karein
+            setFormData({ fullName: '', mobile: '', address: '', category: '', description: '' });
+            setSelectedFile(null);
+            e.target.reset();
+
+        } catch (error) {
+            const errorMessage = error.response ? error.response.data.message : 'Server error. Please try again later.';
+            setFormStatus({ message: errorMessage, type: 'error' });
+        }
     };
     return (
         <section id="file-complaint" className="py-20 bg-white dark:bg-gray-900">
