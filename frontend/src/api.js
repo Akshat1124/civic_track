@@ -1,25 +1,24 @@
-
-
+// frontend/src/api.js (Final Code)
 
 import axios from 'axios';
 
-// Backend server ka live URL
-const API_URL = 'https://civictrack-server.onrender.com/api/complaint';
+// Backend ka base URL
+const API_BASE_URL = 'https://civictrack-server.onrender.com';
 
-/**
- * Backend ko ek nayi complaint file karne ke liye request bhejta hai.
- * @param {object} complaintData - Form ka data.
- * @returns {Promise} - Axios ka promise object.
- */
+// --- Complaint API Calls ---
 export const fileComplaint = (complaintData) => {
-  return axios.post(`${API_URL}/file`, complaintData);
+  return axios.post(`${API_BASE_URL}/api/complaint/file`, complaintData);
 };
 
-/**
- * Di gayi ID ke liye complaint details fetch karta hai.
- * @param {string} complaintId - Track ki jaane wali ID.
- * @returns {Promise} - Axios ka promise object.
- */
 export const trackComplaint = (complaintId) => {
-  return axios.get(`${API_URL}/track/${complaintId}`);
+  return axios.get(`${API_BASE_URL}/api/complaint/track/${complaintId}`);
+};
+
+// --- Auth API Calls ---
+export const loginUser = (credentials) => {
+  return axios.post(`${API_BASE_URL}/api/auth/login`, credentials);
+};
+
+export const registerUser = (userData) => {
+  return axios.post(`${API_BASE_URL}/api/auth/register`, userData);
 };
