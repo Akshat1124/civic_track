@@ -104,113 +104,109 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
     const [isLoginView, setIsLoginView] = useState(true);
     const [message, setMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
-    const AuthModal = ({ onClose, onLoginSuccess }) => {
-        const [isLoginView, setIsLoginView] = useState(true);
-        const [message, setMessage] = useState("");
-        const [isSuccess, setIsSuccess] = useState(false);
-        const modalRef = useRef(null);
+    const modalRef = useRef(null);
 
-        useEffect(() => {
-            const handleEsc = (event) => { if (event.key === 'Escape') onClose(); };
-            window.addEventListener('keydown', handleEsc);
-            const handleClickOutside = (event) => { if (modalRef.current && !modalRef.current.contains(event.target)) onClose(); };
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => {
-                window.removeEventListener('keydown', handleEsc);
-                document.removeEventListener('mousedown', handleClickOutside);
-            };
-        }, [onClose]);
-
-        const handleLogin = async (e) => {
-            e.preventDefault();
-            setMessage("");
-            setIsSuccess(false);
-            const credentials = {
-                email: e.target.email.value,
-                password: e.target.password.value,
-            };
-            try {
-                const response = await loginUser(credentials); // API call
-                onLoginSuccess(response.data.user);
-                onClose();
-            } catch (error) {
-                setMessage(error.response?.data?.message || "Login failed.");
-                setIsSuccess(false);
-            }
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.key === 'Escape') onClose(); };
+        window.addEventListener('keydown', handleEsc);
+        const handleClickOutside = (event) => { if (modalRef.current && !modalRef.current.contains(event.target)) onClose(); };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            window.removeEventListener('keydown', handleEsc);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
+    }, [onClose]);
 
-        const handleRegister = async (e) => {
-            e.preventDefault();
-            setMessage("");
-            setIsSuccess(false);
-            const userData = {
-                username: e.target.name.value,
-                email: e.target.email.value,
-                password: e.target.password.value,
-            };
-            try {
-                await registerUser(userData); // API call
-                setMessage("Registration successful! Please login.");
-                setIsSuccess(true);
-                setIsLoginView(true);
-            } catch (error) {
-                setMessage(error.response?.data?.message || "Registration failed.");
-                setIsSuccess(false);
-            }
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setMessage("");
+        setIsSuccess(false);
+        const credentials = {
+            email: e.target.email.value,
+            password: e.target.password.value,
         };
+        try {
+            const response = await loginUser(credentials); // API call
+            onLoginSuccess(response.data.user);
+            onClose();
+        } catch (error) {
+            setMessage(error.response?.data?.message || "Login failed.");
+            setIsSuccess(false);
+        }
+    };
 
-        return (
-            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md">
-                    <div className="p-6 border-b dark:border-gray-700">
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{isLoginView ? 'Login to Your Account' : 'Create a New Account'}</h2>
-                    </div>
-                    <div className="p-6">
-                        {isLoginView ? (
-                            <form onSubmit={handleLogin} className="space-y-4">
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
-                                    <input type="email" id="email" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
-                                </div>
-                                <div>
-                                    <label htmlFor="password"className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                                    <input type="password" id="password" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
-                                </div>
-                                <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Login</button>
-                            </form>
-                        ) : (
-                            <form onSubmit={handleRegister} className="space-y-4">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-                                    <input type="text" id="name" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
-                                </div>
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
-                                    <input type="email" id="email" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
-                                </div>
-                                <div>
-                                    <label htmlFor="password"className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                                    <input type="password" id="password" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
-                                </div>
-                                <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Register</button>
-                            </form>
-                        )}
-                        {message && (
-                            <div className={`text-center mt-4 p-3 rounded-md text-sm ${isSuccess ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'}`}>
-                                {message}
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setMessage("");
+        setIsSuccess(false);
+        const userData = {
+            username: e.target.name.value,
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
+        try {
+            await registerUser(userData); // API call
+            setMessage("Registration successful! Please login.");
+            setIsSuccess(true);
+            setIsLoginView(true);
+        } catch (error) {
+            setMessage(error.response?.data?.message || "Registration failed.");
+            setIsSuccess(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md">
+                <div className="p-6 border-b dark:border-gray-700">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{isLoginView ? 'Login to Your Account' : 'Create a New Account'}</h2>
+                </div>
+                <div className="p-6">
+                    {isLoginView ? (
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                                <input type="email" id="email" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
                             </div>
-                        )}
-                        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-                            {isLoginView ? "Don't have an account? " : "Already have an account? "}
-                            <button onClick={() => { setIsLoginView(!isLoginView); setMessage(""); }} className="font-medium text-orange-600 hover:text-orange-500">
-                                {isLoginView ? 'Register' : 'Login'}
-                            </button>
-                        </p>
-                    </div>
+                            <div>
+                                <label htmlFor="password"className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                                <input type="password" id="password" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
+                            </div>
+                            <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Login</button>
+                        </form>
+                    ) : (
+                        <form onSubmit={handleRegister} className="space-y-4">
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                                <input type="text" id="name" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                                <input type="email" id="email" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
+                            </div>
+                            <div>
+                                <label htmlFor="password"className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                                <input type="password" id="password" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
+                            </div>
+                            <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Register</button>
+                        </form>
+                    )}
+                    {message && (
+                        <div className={`text-center mt-4 p-3 rounded-md text-sm ${isSuccess ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'}`}>
+                            {message}
+                        </div>
+                    )}
+                    <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
+                        {isLoginView ? "Don't have an account? " : "Already have an account? "}
+                        <button onClick={() => { setIsLoginView(!isLoginView); setMessage(""); }} className="font-medium text-orange-600 hover:text-orange-500">
+                            {isLoginView ? 'Register' : 'Login'}
+                        </button>
+                    </p>
                 </div>
             </div>
-        );
-    };
+        </div>
+    );
+};
 const AccountDropdown = ({ isLoggedIn, user, onLoginClick, onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -280,7 +276,6 @@ const AccountDropdown = ({ isLoggedIn, user, onLoginClick, onLogout }) => {
             )}
         </div>
     );
-};
 };
 
 // --- NAVIGATION COMPONENTS ---

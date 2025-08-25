@@ -25,11 +25,13 @@ pnpm-debug.log*
 
 # Ignore environment variable files
 .env
+frontend/.env
+server/.env
 .env.*
 
 # Ignore node_modules for all projects
 node_modules/
-client/node_modules/
+frontend/node_modules/
 server/node_modules/
 
 # Ignore log files
