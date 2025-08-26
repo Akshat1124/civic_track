@@ -1,176 +1,182 @@
-CIVIC TRACK
-Your Voice for a Better City - A comprehensive digital platform for civic engagement and municipal services.
+# Civic Track
 
-Table of Contents
-Overview
+**Your Voice for a Better City**
 
-Features
+Civic Track is a comprehensive digital platform for civic engagement and municipal services. The application empowers citizens to interact with their local government, file complaints, access public information, and manage municipal services efficiently.
 
-Tech Stack
+---
 
-Getting Started
+## Table of Contents
 
-Project Structure
+- [Overview](#overview)
+- [Live Demo](#live-demo)
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [API Endpoints](#api-endpoints)
+- [Available Scripts](#available-scripts)
+- [Contributing](#contributing)
+- [License](#license)
 
-API Endpoints
+---
 
-Available Scripts
+## Overview
 
-Contributing
+Civic Track bridges the gap between citizens and municipal services through a transparent, user-friendly web application. With real-time complaint tracking, secure tax payments, and access to public information, Civic Track modernizes the way cities connect with their communities.
 
-License
+---
 
-Overview
-CIVIC TRACK is a modern web application designed to bridge the gap between citizens and municipal services. It provides a transparent, efficient, and user-friendly platform for filing complaints, tracking their progress, paying taxes, and accessing public information.
+## Live Demo
 
-Live Demo
-Coming Soon - Deployment in progress
+Access the application here: [https://civic-track-sooty.vercel.app/](https://civic-track-sooty.vercel.app/)
 
-Screenshots
-Screenshots will be added here
+---
 
-Features
-Homepage
-Modern hero section with call-to-action buttons
+## Screenshots
 
-Step-by-step process explanation
+Below is a preview of the Civic Track landing page:
 
-Live statistics with animated counters
+![image1](image1)
 
-Interactive complaint tracking
+---
 
-Ward information lookup
+## Features
 
-Complaint Management
-File Complaints: Comprehensive form with photo upload and location detection
+### General
 
-Track Status: Real-time tracking with unique complaint IDs
+- Modern landing page with intuitive navigation
+- Live statistics and real-time counters
+- Multi-language support via Google Translate
 
-Status History: Complete timeline of complaint resolution
+### Complaint Management
 
-Category-based Filing: Organized complaint categories
+- File complaints with photo uploads and automatic location detection
+- Real-time complaint status tracking with unique IDs
+- Organized, category-based complaint filing
 
-Tax Payment Portal
-Multiple Tax Types: Property, Water, Trade License, Building Permit, Garbage Collection, Parking
+### Tax Payment Portal
 
-Secure Payment: Multiple payment methods (UPI, Cards, Net Banking, Wallets)
+- Support for Property, Water, Trade License, Building Permit, Garbage Collection, and Parking taxes
+- Multiple secure payment methods (UPI, Cards, Net Banking, Wallets)
+- Instant, downloadable payment receipts and full transaction history
 
-Instant Receipts: Download payment confirmations
+### Public Information
 
-Payment History: Track all transactions
+- Access and download official municipal notices and tenders
+- Department directory with contact information
+- Comprehensive FAQ and help documentation
 
-Public Information
-Public Notices: View and download official notices and tenders
+### User Experience
 
-Department Directory: Contact information for all municipal departments
+- Responsive design for desktop, tablet, and mobile
+- Dark/Light mode toggle
+- Accessibility compliance (WCAG)
+- Progressive Web App features for offline support
 
-FAQ Section: Comprehensive help and support documentation
+---
 
-User Experience
-Responsive Design: Works seamlessly on desktop, tablet, and mobile.
+## Tech Stack
 
-Dark/Light Mode: Toggle between themes.
+### Frontend
 
-Multi-language Support: Google Translate integration.
+- React 19.1.0
+- Tailwind CSS 3.4.17
+- Chart.js 4.5.0
+- React CountUp 6.5.3
+- React Intersection Observer 9.16.0
 
-Accessibility: WCAG compliant design.
+### Backend
 
-Progressive Web App: Offline capabilities.
+- Node.js
+- Express
+- MongoDB & Mongoose
+- bcryptjs
+- cors
+- dotenv
 
-Tech Stack
-Frontend
-React 19.1.0 - Modern UI library
+### Maps & Location
 
-Tailwind CSS 3.4.17 - Utility-first CSS framework
+- Leaflet 1.9.4
+- React Leaflet 5.0.0
 
-Chart.js 4.5.0 - Data visualization
+### Development Tools
 
-React CountUp 6.5.3 - Animated counters
+- Create React App 5.0.1
+- PostCSS 8.5.6
+- Autoprefixer 10.4.21
 
-React Intersection Observer 9.16.0 - Scroll animations
+### Testing
 
-Backend
-Node.js - JavaScript runtime environment
+- Jest & React Testing Library
+- Web Vitals 2.1.4
 
-Express - Web framework for Node.js
+---
 
-MongoDB - NoSQL database for storing complaints and user data
+## Getting Started
 
-Mongoose - Object Data Modeling (ODM) library for MongoDB
+### Prerequisites
 
-bcryptjs - Library for hashing passwords
+- Node.js (v16 or higher)
+- npm or yarn
+- Git
 
-cors - Middleware for enabling Cross-Origin Resource Sharing
+### Installation
 
-dotenv - Module for loading environment variables from a .env file
+#### Clone the repository
 
-Maps & Location
-Leaflet 1.9.4 - Interactive maps
-
-React Leaflet 5.0.0 - React components for Leaflet
-
-Development Tools
-Create React App 5.0.1 - Build tooling
-
-PostCSS 8.5.6 - CSS processing
-
-Autoprefixer 10.4.21 - CSS vendor prefixing
-
-Testing
-Jest & React Testing Library - Unit and integration testing
-
-Web Vitals 2.1.4 - Performance monitoring
-
-Getting Started
-Prerequisites
-Node.js (v16 or higher)
-
-npm or yarn
-
-Git
-
-Installation
-Clone the repository
-
-Bash
-
+```bash
 git clone https://github.com/Akshat1124/civic_track.git
 cd civic_track
-Install frontend dependencies
+```
 
-Bash
+#### Install frontend dependencies
 
+```bash
 cd frontend
 npm install
-Install server dependencies
+```
 
-Bash
+#### Install backend dependencies
 
+```bash
 cd ../server
 npm install
-Start the frontend development server
+```
 
-Bash
+#### Start the frontend development server
 
+```bash
 cd ../frontend
 npm start
-Start the backend server
+```
 
-Bash
+#### Start the backend server
 
+```bash
 cd ../server
 npm start
-Open your browser
-Navigate to http://localhost:3000
+```
 
-Environment Setup
-Create a .env file in the server directory:
+#### Open the application
 
-Code snippet
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Environment Variables
+
+Create a `.env` file in the `server` directory:
+
+```
 MONGODB_URI=your_mongodb_connection_string
 PORT=5000
-Project Structure
+```
+
+---
+
+## Project Structure
+
+```
 civic_track/
 ├── frontend/
 │   ├── public/
@@ -178,88 +184,93 @@ civic_track/
 │   │   ├── favicon.ico
 │   │   └── manifest.json
 │   ├── src/
-│   │   ├── App.js                 # Main application component
-│   │   ├── App.css               # Application styles
-│   │   ├── index.js              # Entry point
-│   │   ├── index.css             # Global styles with Tailwind imports
-│   │   └── api.js                # API handling
-│   ├── tailwind.config.js        # Tailwind CSS configuration
-│   ├── package.json              # Dependencies and scripts
-│   └── README.md                 # Project documentation
+│   │   ├── App.js
+│   │   ├── App.css
+│   │   ├── index.js
+│   │   ├── index.css
+│   │   └── api.js
+│   ├── tailwind.config.js
+│   ├── package.json
+│   └── README.md
 ├── server/
 │   ├── models/
-│   │   ├── Complaint.js          # Complaint schema
-│   │   └── User.js               # User schema
+│   │   ├── Complaint.js
+│   │   └── User.js
 │   ├── routes/
-│   │   ├── auth.js               # Authentication routes
-│   │   └── complaint.js          # Complaint routes
-│   ├── .env                      # Environment variables
-│   ├── package.json              # Server dependencies
-│   └── server.js                 # Express server setup
-└── README.md                     # Main project README
-API Endpoints
-Authentication
-POST /api/auth/register: Register a new user.
+│   │   ├── auth.js
+│   │   └── complaint.js
+│   ├── .env
+│   ├── package.json
+│   └── server.js
+└── README.md
+```
 
-POST /api/auth/login: Log in an existing user.
+---
 
-Complaints
-POST /api/complaint/file: File a new complaint.
+## API Endpoints
 
-GET /api/complaint/track/:id: Track a complaint by its ID.
+### Authentication
 
-Available Scripts
-Frontend
-npm start: Runs the app in the development mode.
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Log in an existing user
 
-npm test: Launches the test runner in the interactive watch mode.
+### Complaints
 
-npm run build: Builds the app for production to the build folder.
+- `POST /api/complaint/file` - File a new complaint
+- `GET /api/complaint/track/:id` - Track a complaint by ID
 
-npm run eject: Removes the single dependency configuration from the project.
+---
 
-Server
-npm start: Starts the server.
+## Available Scripts
 
-npm test: Runs the test suite.
+### Frontend
 
-Contributing
-We welcome contributions! Please follow these steps:
+- `npm start` – Run the app in development mode.
+- `npm test` – Launch the test runner.
+- `npm run build` – Build the app for production.
+- `npm run eject` – Remove Create React App configuration.
 
-Fork the repository
+### Server
 
-Create a feature branch
+- `npm start` – Start the Express server.
+- `npm test` – Run backend tests.
 
-Bash
+---
 
-git checkout -b feature/your-feature-name
-Commit your changes
+## Contributing
 
-Bash
+We welcome contributions! To get started:
 
-git commit -m "Add your feature description"
-Push to the branch
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m "Add your feature description"
+   ```
+4. **Push to your branch**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+5. **Open a Pull Request**
 
-Bash
+**Code Style**
 
-git push origin feature/your-feature-name
-Open a Pull Request
+- Use Prettier for formatting.
+- Follow React best practices.
+- Write meaningful commit messages.
+- Add comments for complex logic.
 
-Code Style
-Use Prettier for code formatting.
+**Testing**
 
-Follow React best practices.
+- Write tests for new features.
+- Ensure all tests pass before submitting a PR.
+- Maintain code coverage above 80%.
 
-Write meaningful commit messages.
+---
 
-Add comments for complex logic.
+## License
 
-Testing
-Write tests for new features.
-
-Ensure all tests pass before submitting a PR.
-
-Maintain code coverage above 80%.
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
