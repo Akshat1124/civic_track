@@ -10,7 +10,6 @@ Civic Track is a comprehensive digital platform for civic engagement and municip
 
 - [Overview](#overview)
 - [Live Demo](#live-demo)
-- [Screenshots](#screenshots)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
@@ -31,14 +30,6 @@ Civic Track bridges the gap between citizens and municipal services through a tr
 ## Live Demo
 
 Access the application here: [https://civic-track-sooty.vercel.app/](https://civic-track-sooty.vercel.app/)
-
----
-
-## Screenshots
-
-Below is a preview of the Civic Track landing page:
-
-![image1](image1)
 
 ---
 
