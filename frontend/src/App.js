@@ -3,7 +3,10 @@ import { Chart, registerables } from 'chart.js';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
 import { fileComplaint, trackComplaint, loginUser, registerUser } from './api';
+import './App.css';
 Chart.register(...registerables);
+
+
 
 // --- MOCK DATA ---
 const mockWardData = { '10': { corporator: 'Smt. Anita Singh', mobile: '9876543210', recentWork: ['New streetlights installed on main road.', 'Repaired major water pipeline leakage.'] }, '22': { corporator: 'Shri. Ramesh Gupta', mobile: '9871234567', recentWork: ['Road resurfacing project completed.', 'Conducted sanitation drive.'] } };
@@ -104,6 +107,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
     const [isLoginView, setIsLoginView] = useState(true);
     const [message, setMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const modalRef = useRef(null);
 
     useEffect(() => {
@@ -119,6 +123,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         setMessage("");
         setIsSuccess(false);
         const credentials = {
@@ -132,11 +137,14 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
         } catch (error) {
             setMessage(error.response?.data?.message || "Login failed.");
             setIsSuccess(false);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         setMessage("");
         setIsSuccess(false);
         const userData = {
@@ -152,6 +160,8 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
         } catch (error) {
             setMessage(error.response?.data?.message || "Registration failed.");
             setIsSuccess(false);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -172,7 +182,9 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                                 <label htmlFor="password"className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                                 <input type="password" id="password" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
                             </div>
-                            <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Login</button>
+                            <button type="submit" disabled={isLoading} className={`w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg ${isLoading ? 'btn-loading' : ''}`}>
+                                {isLoading ? '' : 'Login'}
+                            </button>
                         </form>
                     ) : (
                         <form onSubmit={handleRegister} className="space-y-4">
@@ -188,7 +200,9 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                                 <label htmlFor="password"className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                                 <input type="password" id="password" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
                             </div>
-                            <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Register</button>
+                            <button type="submit" disabled={isLoading} className={`w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg ${isLoading ? 'btn-loading' : ''}`}>
+                                {isLoading ? '' : 'Register'}
+                            </button>
                         </form>
                     )}
                     {message && (
@@ -420,6 +434,7 @@ const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [trackingId, setTrackingId] = useState('');
     const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const complaintCategories = [
         "Garbage & Sanitation",
         "Streetlight Not Working",
@@ -486,17 +501,20 @@ const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
     // frontend/src/App.js ke andar FileComplaintSection component
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
         // Pehle check karein ki user logged in hai ya nahi
         if (!isLoggedIn) {
             setFormStatus({ message: 'You must be logged in to submit a complaint.', type: 'error' });
             onRequireLogin(); // Login modal open karega
+            setIsLoading(false);
             return;
         }
 
         // Form ke zaroori fields check karein
         if (!formData.fullName || !formData.mobile || !formData.category || !formData.description) {
             setFormStatus({ message: 'Please fill out all required fields.', type: 'error' });
+            setIsLoading(false);
             return;
         }
 
@@ -515,6 +533,8 @@ const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
         } catch (error) {
             const errorMessage = error.response ? error.response.data.message : 'Server error. Please try again later.';
             setFormStatus({ message: errorMessage, type: 'error' });
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
@@ -578,7 +598,9 @@ const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
                                         </div>
                                     </div>
                                     <div>
-                                        <button type="submit" className="w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg">Submit Complaint</button>
+                                        <button type="submit" disabled={isLoading} className={`w-full cta-button bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg ${isLoading ? 'btn-loading' : ''}`}>
+                                            {isLoading ? '' : 'Submit Complaint'}
+                                        </button>
                                     </div>
                                     {formStatus.message && (
                                       <div className={`text-center p-3 rounded-md text-sm ${formStatus.type === 'success' ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'}`}>
@@ -648,12 +670,17 @@ const TaxPaymentPage = () => {
         paymentMethod: 'online'
     });
     const [paymentStatus, setPaymentStatus] = useState('');
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false);
 
-    const handlePaymentSubmit = (e) => {
+    const handlePaymentSubmit = async (e) => {
         e.preventDefault();
+        setIsPaymentLoading(true);
         setPaymentStatus('processing');
         
-        setTimeout(() => {
+        try {
+            // Simulate payment processing
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
             setPaymentStatus('success');
             setPaymentForm({
                 fullName: '',
@@ -663,7 +690,9 @@ const TaxPaymentPage = () => {
                 paymentMethod: 'online'
             });
             setSelectedTax(null);
-        }, 2000);
+        } finally {
+            setIsPaymentLoading(false);
+        }
     };
 
     const TaxCard = ({ tax }) => (
@@ -772,10 +801,10 @@ const TaxPaymentPage = () => {
                             </div>
                             <button
                                 type="submit"
-                                disabled={paymentStatus === 'processing'}
-                                className="w-full bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg disabled:opacity-50"
+                                disabled={isPaymentLoading}
+                                className={`w-full bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-600 text-lg ${isPaymentLoading ? 'btn-loading' : ''}`}
                             >
-                                {paymentStatus === 'processing' ? 'Processing...' : `Pay ₹${paymentForm.amount || '0'}`}
+                                {isPaymentLoading ? '' : `Pay ₹${paymentForm.amount || '0'}`}
                             </button>
                         </form>
                     )}
