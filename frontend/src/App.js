@@ -152,6 +152,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
             username: e.target.name.value,
             email: e.target.email.value,
             password: e.target.password.value,
+            mobile: e.target.mobile?.value || '',
         };
         try {
             await registerUser(userData); // API call
@@ -215,6 +216,10 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
                                 <input type="text" id="name" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" required />
+                            </div>
+                            <div>
+                                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Mobile Number (Optional)</label>
+                                <input type="tel" id="mobile" className="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm p-3" />
                             </div>
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
@@ -475,13 +480,24 @@ const ComplaintTracker = () => {
     );
 };
 const Statistics = ({ theme }) => { const chartRef = useRef(null); const chartInstance = useRef(null); const stats = [ { title: 'Total Complaints Resolved', value: 14289, color: 'text-green-600' }, { title: 'Average Resolution Time', value: 5.2, subtext: 'Days', color: 'text-orange-500', duration: 3, decimals: 1 }, { title: 'Citizen Satisfaction', value: 92, suffix: '%', color: 'text-yellow-500' } ]; useEffect(() => { if (chartRef.current) { if (chartInstance.current) { chartInstance.current.destroy(); } const ctx = chartRef.current.getContext('2d'); const legendColor = theme === 'dark' ? '#D1D5DB' : '#4B5563'; chartInstance.current = new Chart(ctx, { type: 'doughnut', data: { labels: ['Resolved', 'In Progress', 'New'], datasets: [{ data: [70, 20, 10], backgroundColor: ['rgba(34, 197, 94, 0.8)', 'rgba(249, 115, 22, 0.8)', 'rgba(234, 179, 8, 0.8)'], borderColor: theme === 'dark' ? '#111827' : '#FFFFFF', borderWidth: 4, }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { padding: 20, color: legendColor, font: { size: 14, family: 'Inter' } } }, tooltip: { enabled: true, backgroundColor: '#1F2937', titleFont: { size: 16, weight: 'bold', family: 'Inter' }, bodyFont: { size: 14, family: 'Inter' }, padding: 12, cornerRadius: 8, callbacks: { label: (context) => `${context.label || ''}: ${context.parsed || 0}%` } } } } }); } return () => { if (chartInstance.current) { chartInstance.current.destroy(); } }; }, [theme]); return ( <section id="stats" className="py-20 bg-gray-50 dark:bg-gray-800/50"><div className="container mx-auto px-6"><div className="text-center mb-12"><h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">Live Statistics</h2><p className="text-lg text-gray-600 dark:text-gray-300 mt-2">Transparency in action. See our performance in real-time.</p></div><div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"><div className="space-y-8">{stats.map((stat, index) => ( <StatCard key={index} {...stat} /> ))}</div><div className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg"><h3 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Complaint Status Overview</h3><div className="relative w-full max-w-xs mx-auto h-72"><canvas ref={chartRef}></canvas></div></div></div></div></section> ); };
-const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
+const FileComplaintSection = ({ isLoggedIn, currentUser, onRequireLogin }) => {
     const [formData, setFormData] = useState({ fullName: '', mobile: '', address: '', category: '', description: '' });
     const [formStatus, setFormStatus] = useState({ message: '', type: '' });
     const [selectedFile, setSelectedFile] = useState(null);
     const [trackingId, setTrackingId] = useState('');
     const [isFetchingLocation, setIsFetchingLocation] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Auto-fill form when user logs in or component mounts
+    useEffect(() => {
+        if (isLoggedIn && currentUser) {
+            setFormData(prev => ({
+                ...prev,
+                fullName: currentUser.username || currentUser.name || '',
+                mobile: currentUser.mobile || currentUser.phone || '',
+            }));
+        }
+    }, [isLoggedIn, currentUser]);
     const complaintCategories = [
         "Garbage & Sanitation",
         "Streetlight Not Working",
@@ -566,16 +582,25 @@ const FileComplaintSection = ({ isLoggedIn, onRequireLogin }) => {
         }
 
         try {
-            // Sirf backend ko data bhejein. Frontend mein koi ID na banayein.
-            const response = await fileComplaint(formData);
+            // Include user ID in the complaint data
+            const complaintData = {
+                ...formData,
+                userId: currentUser?.userId || currentUser?.id || null
+            };
+            
+            const response = await fileComplaint(complaintData);
 
             // Backend se mila hua success message (jisme sahi ID hai) display karein
             setFormStatus({ message: response.data.message, type: 'success' });
 
-            // Form ko reset karein
-            setFormData({ fullName: '', mobile: '', address: '', category: '', description: '' });
+            // Reset only complaint-specific fields, keep user details
+            setFormData(prev => ({
+                ...prev,
+                address: '',
+                category: '',
+                description: ''
+            }));
             setSelectedFile(null);
-            e.target.reset();
 
         } catch (error) {
             const errorMessage = error.response ? error.response.data.message : 'Server error. Please try again later.';
